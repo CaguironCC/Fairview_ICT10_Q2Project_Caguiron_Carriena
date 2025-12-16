@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>OB Montessori: Fairview</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #1abc9c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 60px;
+            min-height: 100vh;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-color) !important;
+        }
+        
+        /* Main Content */
+        .page-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .page-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.9)), url('https://images.squarespace-cdn.com/content/v1/664c7ae50eea9c731b37e817/ee62633f-ffa1-4db9-b3fd-96f21033d690/DSC06610.jpg?format=2500w');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+        
+        /* Homepage */
+        .info-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .info-card i {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+        
+        .school-motto {
+            font-style: italic;
+            color: var(--primary-color);
+            border-left: 4px solid var(--accent-color);
+            padding-left: 20px;
+            margin: 30px 0;
+        }
+        
+        /* GWA Calculator */
+        .calculator-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group-custom {
+            margin-bottom: 20px;
+        }
+        
+        .input-group-custom label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .input-group-custom input, .input-group-custom select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group-custom input:focus, .input-group-custom select:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            text-align: left;
+        }
+        
+        .subject-list {
+            font-family: monospace;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 5px;
+            text-align: left;
+        }
+        
+        .passed {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        .failed {
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+        
+        .club-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .club-info {
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+        
+        .footer h5 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+        
+        .footer a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: var(--accent-color);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .page-content {
+                padding: 20px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showPage('home')">
+                <i class="fas fa-school me-2"></i>OB Montessori: Fairview
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showPage('home')">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showPage('gwa')">
+                            <i class="fas fa-calculator me-1"></i> GWA Calculator
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showPage('clubs')">
+                            <i class="fas fa-users me-1"></i> School Clubs
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4">
+        <!-- Homepage -->
+        <div id="home-page" class="page-content active">
+            <div class="hero-section text-center">
+                <h1 class="hero-title">OB MONTESSORI CENTER</h1>
+                <p class="hero-subtitle">Fairview Campus, Quezon City</p>
+                <p class="lead">Educating for Life Since 1966</p>
+            </div>
+            
+            <div class="school-motto">
+                <h3>"EDUCATING FOR LIFE"</h3>
+                <p>Our mission is to provide quality Montessori education that develops the whole child - academically, socially, and emotionally.</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <div class="info-card">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h3>Our Philosophy</h3>
+                        <p>We follow the Montessori method which emphasizes independence, freedom within limits, and respect for a child's natural psychological development.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="info-card">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Campus Location</h3>
+                        <p>Our Fairview Campus in Quezon City delivers quality Montessori education to its thriving community of young families.</p>
+                        <p><strong>Address:</strong> Napoli Street, Neapolitan IV, Brittany Subdivision, Fairview, Quezon City</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="info-card">
+                        <i class="fas fa-phone-alt"></i>
+                        <h3>Contact Information</h3>
+                        <p><strong>Landline:</strong> +632 8461 7773 to 74</p>
+                        <p><strong>Mobile:</strong> +63 909 560 4067, +63 999 952 2104, +63 999 952 2102</p>
+                        <p><strong>Email:</strong> admissions_fv@obmontessori.edu.ph</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h3>Admissions Process</h3>
+                        <p>Joining O.B. Montessori Center is now more convenient with our online application process. Click on the link of your preferred campus to fill out an application form and submit requirements.</p>
+                        <a href="#" class="btn btn-primary mt-3">Apply Online</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h3>Programs Offered</h3>
+                        <ul>
+                            <li>Toddler Community (1.5 - 3 years)</li>
+                            <li>Primary Level (3 - 6 years)</li>
+                            <li>Elementary Level (6 - 12 years)</li>
+                            <li>Adolescent Program (12 - 18 years)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GWA Calculator -->
+        <div id="gwa-page" class="page-content">
+            <h2 class="section-title">General Weighted Average Calculator</h2>
+            
+            <div class="calculator-container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <label for="fname">First Name:</label>
+                            <input type="text" id="fname" placeholder="Enter your first name">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <label for="lname">Last Name:</label>
+                            <input type="text" id="lname" placeholder="Enter your last name">
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="mt-4 mb-3">Enter Your Grades (0-100)</h4>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <label for="science">Science</label>
+                            <input type="number" id="science" min="0" max="100" placeholder="Enter score">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <label for="math">Math</label>
+                            <input type="number" id="math" min="0" max="100" placeholder="Enter score">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <label for="english">English</label>
+                            <input type="number" id="english" min="0" max="100" placeholder="Enter score">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <label for="filipino">Filipino</label>
+                            <input type="number" id="filipino" min="0" max="100" placeholder="Enter score">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <label for="ict">ICT</label>
+                            <input type="number" id="ict" min="0" max="100" placeholder="Enter score">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="input-group-custom">
+                            <label for="pe">PE</label>
+                            <input type="number" id="pe" min="0" max="100" placeholder="Enter score">
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="compute-btn" class="btn btn-primary w-100 mt-3" py-click="general_weighted_average">
+                    <i class="fas fa-calculator me-2"></i>Calculate GWA
+                </button>
+                
+                <div class="result-box">
+                    <div id="student_info" class="student-info mb-3"></div>
+                    <div id="summary" class="subject-list"></div>
+                    <div id="output" class="mt-3 fw-bold"></div>
+                    <div id="status" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- School Club Information -->
+        <div id="clubs-page" class="page-content">
+            <h2 class="section-title">School Club Information</h2>
+            
+            <div class="club-container">
+                <div class="input-group-custom">
+                    <label for="clubs">Select a club:</label>
+                    <select id="clubs" name="clubs">
+                        <option value="">Select a Club</option>
+                        <option value="glee">Glee Club</option>
+                        <option value="dance">Dance Club</option>
+                        <option value="math">Math Club</option>
+                        <option value="communications">Communications Arts Club</option>
+                        <option value="social">Social Studies Club</option>
+                        <option value="volleyball">Volleyball Varsity</option>
+                    </select>
+                </div>
+                
+                <button id="get-info-btn" class="btn btn-primary w-100 mt-3" py-click="display_club_info">
+                    <i class="fas fa-info-circle me-2"></i>Get Information
+                </button>
+                
+                <div class="result-box mt-4">
+                    <div id="message" class="club-info">
+                        <strong>Select a club to see information here...</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>OB MONTESSORI CENTER</h5>
+                    <p>Fairview Campus, Quezon City</p>
+                    <p>"Educating for Life"</p>
+                </div>
+                
+                <div class="col-md-4">
+                    <h5>Contact Information</h5>
+                    <p><i class="fas fa-phone me-2"></i> +632 8461 7773 to 74</p>
+                    <p><i class="fas fa-envelope me-2"></i> admissions_fv@obmontessori.edu.ph</p>
+                    <p><i class="fas fa-map-marker-alt me-2"></i> Napoli Street, Neapolitan IV, Brittany Subdivision, Fairview, Quezon City</p>
+                </div>
+                
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" onclick="showPage('home')"><i class="fas fa-chevron-right me-2"></i> Home</a></li>
+                        <li><a href="#" onclick="showPage('gwa')"><i class="fas fa-chevron-right me-2"></i> GWA Calculator</a></li>
+                        <li><a href="#" onclick="showPage('clubs')"><i class="fas fa-chevron-right me-2"></i> School Clubs</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>© 2025 O.B. Montessori Center. All Rights Reserved.</p>
+                <p>NPC Seal of Registration. | Privacy Policy</p>
+            </div>
+        </div>
+    </footer>
+
+    <py-config>
+        packages = []
+        [[fetch]]
+        files = ["main.py"]
+    </py-config>
+    <script type="py" src="main.py"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // JavaScript for page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(`${pageId}-page`).classList.add('active');
+            
+            // Update active nav link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Find and activate the corresponding nav link
+            const activeLink = Array.from(navLinks).find(link => 
+                link.getAttribute('onclick') && link.getAttribute('onclick').includes(pageId)
+            );
+            
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            
+            // Scroll to top when changing pages
+            window.scrollTo(0, 0);
+        }
+        
+        // Initialize page on load
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+        });
+    </script>
+</body>
+</html>
